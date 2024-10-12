@@ -21,7 +21,7 @@ describe('E2E flow to predict match', () => {
     cy.visit('https://vuabong.cc/')
   })
 
-  context.skip('Sign Up flow', () => {
+  context('Sign Up flow', () => {
     let usernameIFSel = 'input[placeholder*="Nhập tên"]'
     let accountIFSel = 'input[placeholder*="Nhập tài"]'
     let emailIFSel = 'input[placeholder*="Nhập địa"]'
@@ -56,7 +56,7 @@ describe('E2E flow to predict match', () => {
     it('Register an account flow', () => {
       cy.get('#signup-modal').should('be.visible')
       // input username field
-      cy.get(`${usernameIFSel}`).type('richard doc')
+      cy.get(`${usernameIFSel}`).type(Cypress.env('username'))
       // input account field
       cy.get(`${accountIFSel}`).type(Cypress.env('account'))
       // input email field
@@ -68,16 +68,11 @@ describe('E2E flow to predict match', () => {
     })
   })
 
-  context.skip('Log In flow', () => {
+  context('Log In flow', () => {
     let isRegisterButtonVisible
     it('Log out if logged in', () => {
-      isRegisterButtonVisible = cy.$$('button.header-button:contains("Đăng ký")')
-      if(isRegisterButtonVisible.length == 0) {
-        cy.get('.user-box').realClick()
-        cy.get('a:contains("Đăng xuất")').realClick()
-      } else {
-        cy.log('Logged out')
-      }
+      cy.get('.user-box').realClick()
+      cy.get('a:contains("Đăng xuất")').realClick()
     })
 
     it('Log In Form Validation', () => {
@@ -112,14 +107,14 @@ describe('E2E flow to predict match', () => {
     it('Click "Đăng dự đoán" button should open BV modal', () => {
       cy.intercept('GET','/api/event/search?s=*').as('listResultsAPI')
       cy.intercept('GET','/api/user/check-max-bet-gold').as('getMaxGoldsAPI')
-      cy.intercept('GET','/api/tip/new-tips').as('newestPredictAPI')
+      cy.intercept('POST','/api/tip/new-tips').as('newestPredictAPI')
       
       cy.get('.navbar-nav a.nav-link[href="/du-doan"]').click()
       cy.get('button.header-button:contains("ĐĂNG DỰ ĐOÁN")').click()
       // cy.wait(2000)
       cy.get('#bv-modal-post-tip-search input[placeholder*="Tìm kiếm"]').as('searchIF')
         .should('be.visible')
-        .type('Anh')
+        .type('Kyoto')
       
       cy.get('.modal-body .list-group li').should('be.visible')
       cy.wait('@listResultsAPI').then((res) => {
@@ -187,17 +182,18 @@ describe('E2E flow to predict match', () => {
         //Verify the predict match just posted is appear in the Newest Predict part
         cy.get('.header-chart-event button:contains("DỰ ĐOÁN")').eq(0).click()
 
-        cy.wait('@newestPredictAPI').then((res) => {
-          cy.wrap(res).its('response').then((response) => {
-            let responseDt = JSON.parse(response.body)
-            lstNewestBetResult = responseDt.data
-            console.log('lstNewestBetResult: ', lstNewestBetResult)
-            // expect(lstNewestBetResult).is.gt(0)
-          })
-        })
+        // cy.wait('@newestPredictAPI').then((res) => {
+        //   cy.wrap(res).its('response').then((response) => {
+        //     let responseDt = JSON.parse(response.body)
+        //     lstNewestBetResult = responseDt.data
+        //     console.log('lstNewestBetResult: ', lstNewestBetResult)
+        //     // expect(lstNewestBetResult).is.gt(0)
+        //   })
+        // })
         cy.get('.card h5 b:contains("DỰ ĐOÁN MỚI NHẤT")').should('be.visible')
-        cy.get('.new-tips-lanscape').children().eq(1)
-                                    .children().eq(0)
+        //newest predict match should show at the first index
+        cy.get(`.new-tips-lanscape .match-box-content a[role="button"] div:contains("${Cypress.env("username")}")`)
+          .should('be.visible')
       })
       
 
