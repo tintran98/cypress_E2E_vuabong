@@ -1,0 +1,27 @@
+{
+  "name": "cypress_e2e_test",
+  "version": "1.0.0",
+  "description": "End to end test to predict a match",
+  "scripts": {
+    "cy:open": "cypress open"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@cypress/grep": "^4.1.0",
+    "@shelex/cypress-allure-plugin": "^2.40.2",
+    "chai-subset": "^1.6.0",
+    "cy-mobile-commands": "^0.3.0",
+    "cypress": "^13.15.0",
+    "cypress-axe": "^1.5.0",
+    "cypress-diff": "^0.0.6",
+    "cypress-iframe": "^1.0.1",
+    "cypress-localstorage-commands": "^2.2.6",
+    "cypress-real-events": "^1.13.0",
+    "eslint": "^9.12.0",
+    "eslint-plugin-cypress": "^3.5.0",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "prettier": "^3.3.3"
+  }
+}
